@@ -8,6 +8,7 @@
 //como sabe-se que este projeto não possui muitas atualizações constantes, este método é vantajoso pois não consome muitos,
 //recursos a página apenas será atualizada no tempo que o programador estipular.
 
+import { useContext } from 'react';
 import { GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link'; //Biblioteca que otimiza a aplicação com chamadas de links (a página não é recarregada do zero)
@@ -16,6 +17,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 
 import { api } from '../services/api';
 import { convertDurationToTimeString } from '../utils/convertDurationToTimeString';
+import { PlayerContext } from '../contexts/PlayerContext';
 
 import styles from './home.module.scss';
 
@@ -36,6 +38,8 @@ type HomeProps = {
 }
 
 export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
+  const { play } = useContext(PlayerContext)
+
   return (
     <div className={styles.homePage}>
       <section className={styles.latestEpisodes}>
@@ -62,7 +66,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
                   <span>{episode.durationAsString}</span>
                 </div>
 
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                   <img src="/play-green.svg" alt="Tocar episódio" />
                 </button>
               </li>

@@ -61,9 +61,27 @@ export default function Episode({ episode }: EpisodeProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  //recupera os dados apenas nos dois últimos episódios lançados
+  const { data } = await api.get('episodes', {
+    params: {
+      _limit: 2,
+      _sort: 'published_at',
+      _order: 'desc'
+    }
+  })
+
+  //atribui o id dos dois episódios em paths
+  const paths = data.map(episode => {
+    return {
+      params: {
+        slug: episode.id
+      }
+    }
+  })
+
   return {
-    paths: [],
-    fallback: 'blocking'
+    paths, //já cria uma página estática antes mesmo do usuário acessa-la, para carregamento mais rápido (neste caso para os dois episódios, pois eles são passados como parâmetro pela constante paths) 
+    fallback: 'blocking' //carrega as páginas do restante dos episódios no momento que o usuário acessar o episódio (mais lento, mas dinâmico)
   }
 }
 
